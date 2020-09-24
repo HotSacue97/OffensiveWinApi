@@ -1,3 +1,5 @@
+//Function get a process name as argument, and return its pid
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
@@ -5,7 +7,7 @@
 
 #define MAX_LEN 1024
 
-DWORD GetPid(TCHAR ProcName[])
+DWORD GetPid(TCHAR* ProcName)
 {
 	DWORD processes[1024], num;
 	EnumProcesses(processes, sizeof(processes), &num);
@@ -32,10 +34,4 @@ DWORD GetPid(TCHAR ProcName[])
 			}
 		}
 	}
-}
-
-int _tmain(int argc, TCHAR* argvp[])
-{
-	TCHAR ProcName[MAX_LEN] = _T("winlogon.exe");
-	GetPid(ProcName);
 }
