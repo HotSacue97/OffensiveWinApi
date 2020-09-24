@@ -1,3 +1,5 @@
+//Function get a process name as argument, and return its pid
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
@@ -21,10 +23,4 @@ DWORD GetPid(TCHAR* ProcName)
 	}
 	CloseHandle(snapshot);
 	return process.th32ProcessID;
-}
-
-int _tmain(int argc, TCHAR* argvp[])
-{
-	TCHAR ProcName[MAX_LEN] = _T("winlogon.exe");
-	GetPid(ProcName);
 }
