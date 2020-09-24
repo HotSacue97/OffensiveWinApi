@@ -8,14 +8,13 @@
 #include <tchar.h>
 
 #define MAX_LEN 1024
-
 BOOL EnableDebug(void)
 {
 	LUID privilegeLuid;
 	if (!LookupPrivilegeValue(NULL, _T("SeDebugPrivilege"), &privilegeLuid));
 	{
 		_tprintf(_T("Error - cant get privilege\n"));
-		return FALSE
+		return FALSE;
 	}
 
 	TOKEN_PRIVILEGES privs;
@@ -36,12 +35,12 @@ BOOL EnableDebug(void)
 	GetTokenInformation(token, TokenPrivileges, NULL, 0, &size);
 	PTOKEN_PRIVILEGES tokenPrivs = (PTOKEN_PRIVILEGES)malloc(size);
 	GetTokenInformation(token, TokenPrivileges, tokenPrivs, size, &size);
-	
+
 	PLUID_AND_ATTRIBUTES luid;
-	for (DWORD i = 0; i< tokenPrivs->PrivilegeCount; i++);
+	for (DWORD i = 0; i < tokenPrivs->PrivilegeCount; i++)
 	{
 		luid = &tokenPrivs->Privileges[i];
-		if ((luid->Luid.LowPart == privilegeLuid.LowPart) & (luid->Luid.HighPart == privilegeLuid.LowPart))
+		if ((luid->Luid.LowPart == privilegeLuid.LowPart) & (luid->Luid.HighPart == privilegeLuid.HighPart))
 		{
 			if (AdjustTokenPrivileges(token, FALSE, &privs, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
 			{
