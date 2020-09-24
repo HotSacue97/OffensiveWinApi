@@ -1,3 +1,7 @@
+//Spoofing a parent process, for choosing any parent process change - "lsass.exe" - to any desired processes.
+//To choose the child process who is spoofing his parent, change - "C:\\Windows\\System32\\notepad.exe" - to any desired exe file.
+//This program changes the AttributeList in the StartupInfo structure, and then the process created by CreatedProcess is created with new StartupInfo - Spoofing his parent process
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
