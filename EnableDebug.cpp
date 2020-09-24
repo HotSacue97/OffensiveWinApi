@@ -1,3 +1,8 @@
+//Enable SeDebugPrivilege - Can enable any privilege by changinge the TCHAR "SeDebugPrivilege" to the desired privilege
+//Include validing if the privilege exist in the token, to be sure it can be enabled. This is important because the WinApi -"AdjustTokenPrivileges function
+//Will return no error if the desired pirvilege is a valid privilege, but does not exist on the token, so you wont know it really worked, unless you have checked
+//It exist in the Token
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
@@ -48,9 +53,4 @@ BOOL EnableDebug(void)
 	}
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
 	return 1;
-}
-
-int _tmain(int argc, TCHAR* argvp[])
-{
-	EnableDebug();
 }
