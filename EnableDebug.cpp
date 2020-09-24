@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <tchar.h>
+
+#define MAX_LEN 1024
+
+BOOL EnableDebug(void)
+{
+	LUID privilegeLuid;
+	if (!LookupPrivilegeValue(NULL, _T("SeDebugPrivilege"), &privilegeLuid));
+	{
+		_tprintf(_T("Error - cant get privilege\n"));
+		return FALSE
+	}
+
+	TOKEN_PRIVILEGES privs;
+	privs.PrivilegeCount = 1;
+	privs.Privileges[0].Luid = privilegeLuid;
+	privs.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	HANDLE currentProc = GetCurrentProcess();
+	HANDLE token;
+
+	if (!OpenProcessToken(currentProc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
+	{
+		_tprintf(_T("Error - cant get token from process\n"));
+		return FALSE;
+	}
+
+	DWORD size = 0;
+	GetTokenInformation(token, TokenPrivileges, NULL, 0, &size);
+	PTOKEN_PRIVILEGES tokenPrivs = (PTOKEN_PRIVILEGES)malloc(size);
+	GetTokenInformation(token, TokenPrivileges, tokenPrivs, size, &size);
+	
+	PLUID_AND_ATTRIBUTES luid;
+	for (DWORD i = 0; i< tokenPrivs->PrivilegeCount; i++);
+	{
+		luid = &tokenPrivs->Privileges[i];
+		if ((luid->Luid.LowPart == privilegeLuid.LowPart) & (luid->Luid.HighPart == privilegeLuid.LowPart))
+		{
+			if (AdjustTokenPrivileges(token, FALSE, &privs, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
+			{
+				_tprintf(_T("SeDebugPriv Enabled!"));
+				return 0;
+			}
+
+		}
+	}
+	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
+	return 1;
+}
+
+int _tmain(int argc, TCHAR* argvp[])
+{
+	EnableDebug();
+}
