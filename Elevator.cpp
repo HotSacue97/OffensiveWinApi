@@ -1,3 +1,7 @@
+//This function check if it is running with System token(privileges) if it doesn't, it steals the token from winlogon - one of the vulnerable processes with system token(privileges)
+//And run it self in new process with System token.
+//Of course you can add your own code to run once the program validate it is running as system
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
