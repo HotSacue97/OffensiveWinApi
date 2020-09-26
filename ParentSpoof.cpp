@@ -78,7 +78,8 @@ DWORD GetPid(TCHAR* ProcName)
 int _tmain(int argc, TCHAR* argvp[])
 {
 	EnableDebug();
-	DWORD pid = GetPid(_T(PARENT_PROC));
+	TCHAR ProcName[MAX_LEN] = _T(PARENT_PROC);
+	DWORD pid = GetPid(_T(ProcName));
 
 	HANDLE hParent = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	STARTUPINFOEX startInfo = { sizeof(startInfo) };
