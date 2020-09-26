@@ -1,3 +1,6 @@
+//Thie function steal a token from winlogon - one of the vulnerable processes with system token(privileges), and creates a new cmd with that token
+//You can chaange - FILE_PATH to change the cmd to the desired program you want to run as system
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
