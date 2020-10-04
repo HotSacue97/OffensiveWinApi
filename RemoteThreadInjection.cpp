@@ -25,20 +25,16 @@ int main(int argc, const char* argv[])
 	if (!buffer)
 	{
 		_tprintf(_T("Cant allocate memory in target process\n"));
+		CloseHandle(hProcess);
 		return 1;
 	}
-	printf("%d",!WriteProcessMemory(hProcess, buffer, argv[2], strlen(argv[2]), NULL));
-	/*if(!WriteProcessMemory(hProcess, buffer, argv[2], _tcslen(argv[2]), NULL));
-	{
-		_tprintf(_T("Cant write memory in target process\n"));
-		//return 1;
-	}
-	*/
+	WriteProcessMemory(hProcess, buffer, argv[2], strlen(argv[2]), NULL);
 	LPTHREAD_START_ROUTINE start = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(_T("kernel32")),("LoadLibraryA"));
 	HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, start, buffer, NULL, NULL);
 	if (!hThread)
 	{
 		_tprintf(_T("Cant create thread in target process\n"));
+		CloseHandle(hProcess);
 		return 1;
 	}
 	CloseHandle(hProcess);
