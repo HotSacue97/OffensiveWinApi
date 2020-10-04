@@ -48,12 +48,16 @@ BOOL EnableDebug(void)
 			if (AdjustTokenPrivileges(token, FALSE, &privs, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
 			{
 				_tprintf(_T("SeDebugPriv Enabled!"));
+				CloseHandle(currentProc);
+				CloseHandle(token);
 				return 0;
 			}
 
 		}
 	}
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
+	CloseHandle(currentProc);
+	CloseHandle(token);
 	return 1;
 }
 
@@ -93,4 +97,6 @@ int _tmain(int argc, TCHAR* argvp[])
 	startInfo.StartupInfo.cb = (sizeof(STARTUPINFOEX));
 
 	CreateProcess(_T(CHILD_PROC), NULL, NULL, NULL, TRUE, EXTENDED_STARTUPINFO_PRESENT, NULL, NULL, reinterpret_cast<LPSTARTUPINFO>(&startInfo), &processInfo);
+	CloseHandle(hParent);
+	return 0;
 }
