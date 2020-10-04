@@ -1,3 +1,6 @@
+//This code injects a chosen dll to a chosen process
+//The usage of the code is - <ExeFile> <VictimProcessPid> <DllFile>
+
 #include <stdio.h>
 #include <Windows.h>
 #include <tchar.h>
@@ -38,4 +41,6 @@ int main(int argc, const char* argv[])
 		_tprintf(_T("Cant create thread in target process\n"));
 		return 1;
 	}
+	CloseHandle(hProcess);
+	return 0;
 }
