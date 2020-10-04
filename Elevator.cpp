@@ -98,6 +98,7 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!OpenProcessToken(MyProc, MAXIMUM_ALLOWED, &token))
 	{
 		_tprintf(_T("Can't open own process token\n"));
+		CloseHandle(Hprocess):
 		return 1;
 	}
 	
@@ -107,6 +108,8 @@ int _tmain(int argc, TCHAR* argvp[])
 	if(!GetTokenInformation(token,TokenUser,(LPVOID)tokenUser,len,&len))
 	{
 		_tprintf(_T("Can't get token user information\n"));
+		CloseHandle(Hprocess):
+		CloseHandle(MyProc):
 		return 1;
 	}
 
@@ -132,12 +135,20 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!OpenProcessToken(Hprocess, TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_IMPERSONATE | TOKEN_QUERY, &token))
 	{
 		_tprintf(_T("Can't get process token\n"));
+		CloseHandle(Hprocess):
+		CloseHandle(MyProc):
+		CloseHandle(token):
+		CloseHandle(newToken):
 		return 1;
 	}
 
 	if (!DuplicateTokenEx(token, MAXIMUM_ALLOWED, NULL, SecurityImpersonation, TokenPrimary, &newToken))
 	{
 		_tprintf(_T("Can't duplicate token \n"));
+		CloseHandle(Hprocess):
+		CloseHandle(MyProc):
+		CloseHandle(token):
+		CloseHandle(newToken):
 		return 1;
 	}
 
@@ -147,7 +158,15 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!CreateProcessWithTokenW(newToken, LOGON_NETCREDENTIALS_ONLY, _T(FILE_PATH), NULL, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &procInfo))
 	{
 		_tprintf(_T("Can't create process with stolen token\n"));
+		CloseHandle(Hprocess):
+		CloseHandle(MyProc):
+		CloseHandle(token):
+		CloseHandle(newToken):
 		return 1;
 	}
+	CloseHandle(Hprocess):
+	CloseHandle(MyProc):
+	CloseHandle(token):
+	CloseHandle(newToken):
 	return 0;
 }
