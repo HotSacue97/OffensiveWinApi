@@ -47,12 +47,15 @@ BOOL EnableDebug(void)
 			if (AdjustTokenPrivileges(token, FALSE, &privs, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
 			{
 				_tprintf(_T("SeDebugPriv Enabled!"));
+				CloseHandle(currentProc);
+				CloseHandle(token);
 				return 0;
 			}
-
 		}
 	}
-	_tprintf(_T("Can't get SeDebugPriv Enabled!"));
+	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
+	CloseHandle(currentProc);
+	CloseHandle(token);
 	return 1;
 }
 
@@ -110,6 +113,8 @@ int _tmain(int argc, TCHAR* argvp[])
 		_tprintf(_T("Can't create process with stolen token\n"));
 		return 1;
 	}
-
+	CloseHandle(hProcess);
+	CloseHandle(token);
+	CloseHandle(newToken);
 	return 0;
 }
