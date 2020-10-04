@@ -45,11 +45,15 @@ BOOL EnableDebug(void)
 			if (AdjustTokenPrivileges(token, FALSE, &privs, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
 			{
 				_tprintf(_T("SeDebugPriv Enabled!"));
+				CloseHandle(currentProc);
+				CloseHandle(token);
 				return 0;
 			}
 
 		}
 	}
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
+	CloseHandle(currentProc);
+	CloseHandle(token);
 	return 1;
 }
