@@ -18,9 +18,13 @@ Using CreateToolHelp32Snapshot.
 
 ## ParentSpoof
 Spoofing a parent process. 
-This program changes the AttributeList in the StartupInfo structure, and then the process created by CreatedProcess is created with new StartupInfo.
+This code changes the AttributeList in the StartupInfo structure, and then the process created by CreatedProcess is created with new StartupInfo.
 The chosen parent and child processes can be changes by changing constants.
 
 ## TokenStealer
-Thie function steal a token from winlogon - one of the vulnerable processes with system token(privileges), and creates a new cmd with that token.
+This code steals a token from winlogon - one of the vulnerable processes with system token(privileges), and creates a new cmd with that token.
 You can change the cmd.exe to anathor file by changing a constant.
+
+# RemoteThreadInjection
+This code injects a chosen dll to a chosen process, using simple method of CreateRemoteThread.
+The usage of the code is - <ExeFile> <VictimProcessPid> <DllFile>
