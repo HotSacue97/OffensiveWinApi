@@ -96,12 +96,15 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!OpenProcessToken(Hprocess, TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_IMPERSONATE | TOKEN_QUERY, &token))
 	{
 		_tprintf(_T("Can't get process token\n"));
+		CloseHandle(hProcess);
 		return 1;
 	}
 
 	if (!DuplicateTokenEx(token, MAXIMUM_ALLOWED, NULL, SecurityImpersonation, TokenPrimary, &newToken))
 	{
 		_tprintf(_T("Can't duplicate token \n"));
+		CloseHandle(hProcess);
+		CloseHandle(token);
 		return 1;
 	}
 
