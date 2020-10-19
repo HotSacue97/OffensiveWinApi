@@ -11,13 +11,13 @@
 #define PARENT_PROC "lsass.exe"
 #define CHILD_PROC "C:\\Windows\\System32\\notepad.exe"
 
-BOOL EnableDebug(void)
+int EnableDebug(void)
 {
 	LUID privilegeLuid;
 	if (!LookupPrivilegeValue(NULL, _T("SeDebugPrivilege"), &privilegeLuid))
 	{
 		_tprintf(_T("Error - cant get privilege\n"));
-		return FALSE;
+		return 0;
 	}
 
 	TOKEN_PRIVILEGES privs;
@@ -31,7 +31,7 @@ BOOL EnableDebug(void)
 	if (!OpenProcessToken(currentProc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
 	{
 		_tprintf(_T("Error - cant get token from process\n"));
-		return FALSE;
+		return 0;
 	}
 
 	DWORD size = 0;
@@ -50,7 +50,7 @@ BOOL EnableDebug(void)
 				_tprintf(_T("SeDebugPriv Enabled!"));
 				CloseHandle(currentProc);
 				CloseHandle(token);
-				return 0;
+				return 1;
 			}
 
 		}
@@ -58,7 +58,7 @@ BOOL EnableDebug(void)
 	_tprintf(_T("Cant get SeDebugPriv Enabled!"));
 	CloseHandle(currentProc);
 	CloseHandle(token);
-	return 1;
+	return 0;
 }
 
 DWORD GetPid(TCHAR* ProcName)
@@ -98,5 +98,5 @@ int _tmain(int argc, TCHAR* argvp[])
 
 	CreateProcess(_T(CHILD_PROC), NULL, NULL, NULL, TRUE, EXTENDED_STARTUPINFO_PRESENT, NULL, NULL, reinterpret_cast<LPSTARTUPINFO>(&startInfo), &processInfo);
 	CloseHandle(hParent);
-	return 0;
+	return 1;
 }
