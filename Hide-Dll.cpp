@@ -1,4 +1,4 @@
-// This code hides a dll from on of the lists in memory, for for stealth you should do the same for all lists in memory:
+// This code hides a dll from one of the module lists in memory, for for stealth you should do the same for all lists in memory:
 //	InLoadOrderMouduleList;
 //	InMemoryOrderMouduleList;
 //	InInitializationOrderMouduleList;
