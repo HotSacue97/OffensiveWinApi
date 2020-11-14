@@ -3,7 +3,7 @@
 //	InMemoryOrderMouduleList;
 //	InInitializationOrderMouduleList;
 // I just hidden the first module in the list, but you an of course change it and hide what ever module you like by name
-// By changing line 107 with the comment - Instead can insert here any dll name
+// By changing line 107 with the comment - You can insert here any dll name instead
 
 #include <stdio.h>
 #include <windows.h>
@@ -105,7 +105,7 @@ int _tmain(int argc, const TCHAR* argv[])
 
 	// Get first entry of InMemoryOrderModuleList
 	_Ldr_Data_Table_Entry* module = (_Ldr_Data_Table_Entry*)ldr->InLoadOrderMouduleList.Flink;
-	PWSTR first_module = module->FullDllName.Buffer; // Instead can insert here any dll name
+	PWSTR first_module = module->FullDllName.Buffer; // You can insert here any dll name instead
 	module = (_Ldr_Data_Table_Entry*)module->InLoadOrderLinks.Flink;
 	PWSTR module_name = module->FullDllName.Buffer;
 
