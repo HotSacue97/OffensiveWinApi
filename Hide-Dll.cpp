@@ -1,3 +1,10 @@
+// This code hides a dll from on of the lists in memory, for for stealth you should do the same for all lists in memory:
+//	InLoadOrderMouduleList;
+//	InMemoryOrderMouduleList;
+//	InInitializationOrderMouduleList;
+// I just hidden the first module in the list, but you an of course change it and hide what ever module you like by name
+// By changing line 107 with the comment - Instead can insert here any dll name
+
 #include <stdio.h>
 #include <windows.h>
 #include <winternl.h>
